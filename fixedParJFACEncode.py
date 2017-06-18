@@ -10,16 +10,17 @@ def dispatch(args):
     
     # set process
     process = subprocess.Popen(batchCMD, \
-                stdin = subprocess.PIPE, \
-                stdout = subprocess.PIPE, \
+                stdin = subprocess.PIPE,       # set parameter input stream \
+                stdout = subprocess.PIPE,      # set console output stream \
                 shell = True, \
                 bufsize = 8, \
                 universal_newlines = True, \
-                cwd = mvnWorkingDir)
-    
+                cwd = mvnWorkingDir)             # set working directory of cmd
+                               
+    # inject parameters to JFAC
     process.stdin.write(args)
     
-#    # notify build msgs
+    # notify build msgs
     for line in iter(process.stdout.readline, ""):
         print(line, end='')
         
@@ -30,13 +31,16 @@ def dispatch(args):
 Buil the parameters for batch JFAC processing.
 '''
 def buildParamsStr():
+    # define values for each paramter
     FS = ['8', '16']
     RBS = ['128','64']
     COEFF = ['1.4', '1.3']
     
+    # combination paramters with cartetian product
     PARAMS = list(product(FS, RBS, COEFF))
     PARAMSSCRIPT = []
     
+    # build paramters script for each combination
     for params in PARAMS:
         fs = params[0]
         rbs = params[1]
@@ -58,6 +62,8 @@ def buildParamsStr():
                       'skipifexist false', \
                       'minr ' + rbs, \
                       'maxr ' + rbs]
+        
+        # join and split line with Python concat convention
         PARAMSSCRIPT += ['\n'.join(paramsScript) + '\n\n']
     
     return PARAMSSCRIPT
@@ -65,12 +71,15 @@ def buildParamsStr():
 '''
 Run batch JFAC
 '''
+# build all parameter scripts
 PARAMSSCRIPT = buildParamsStr()
+
+# iterate over parameter scripts
 for param in PARAMSSCRIPT:
-    dispatch( param )
-
-
-
-
-
+    
+    # run X time fault tolerance
+    # JCUDA maybe segfault during operation
+    for faultTolerance in range(10):
+        print("Trying no. " + str(faultTolerance)) # indicate tolerance iteration
+        dispatch( param ) # exec each parameter script
 
