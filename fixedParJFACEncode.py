@@ -21,11 +21,11 @@ def dispatch(args):
                 universal_newlines = True, \
                 cwd = mvnWorkingDir)
     
-    process.communicate(args)
+    process.stdin.write(args)
     
 #    # notify build msgs
-#    for line in iter(process.stdout.readline, ""):
-#        print(line, end='')
+    for line in iter(process.stdout.readline, ""):
+        print(line, end='')
         
     # free I/O
     process.stdout.close()
@@ -45,10 +45,10 @@ def buildParamsStr():
         fs = params[0]
         rbs = params[1]
         coeff = params[2]
-        testName = 
+        testName = str('AN4' + fs + '_FP_RBS' + rbs  + '_COEFF' + coeff)
     
         paramsScript = ['processname compress', \
-                      'testname default', \
+                      'testname ' + testName, \
                       'infile ..//settings//an4traintest_small.txt', \
                       'inpathprefix ..//corpus//audio//BASE' + fs + '//wav//', \
                       'outdir ..//codes//', \
