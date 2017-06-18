@@ -5,12 +5,8 @@ Dispatch the cmd to exec the java-fractacl-audio-compression by maven with
 default parameters.
 '''
 def dispatch(args):
-    paramsFilePath = "'..\\settings\\default-params.txt'";
     mvnWorkingDir = '..\\java-fractal-audio-compression';
-#    batchCMD = ['mvn','exec:exec','-Dparams=' + paramsFilePath ];
     batchCMD = ['mvn','exec:exec' ];
-    
-    params = open('..\\settings\\default-params.txt', 'r');
     
     # set process
     process = subprocess.Popen(batchCMD, \
@@ -66,9 +62,12 @@ def buildParamsStr():
     
     return PARAMSSCRIPT
 
-PS = buildParamsStr()
-print( PS[0] )
-dispatch( PS[0] )
+'''
+Run batch JFAC
+'''
+PARAMSSCRIPT = buildParamsStr()
+for param in PARAMSSCRIPT:
+    dispatch( param )
 
 
 
